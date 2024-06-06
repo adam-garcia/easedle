@@ -1,5 +1,5 @@
 <script>
-  import {playbackSpeed, playingStatus, animation} from '$lib/store.js';
+  import {playbackSpeed, playingStatus, animation, newGame} from '$lib/store.js';
   import { newAnimation } from '$lib/animation.js'
   function togglePlay(e) {
     if ($animation.paused) {
@@ -16,9 +16,7 @@
     animation.update(() => newAnimation($playbackSpeed));
     $animation.play()
   }
-
 </script>
-
 <div class="container">
   <div class="row">
     <div class="column">
@@ -39,9 +37,10 @@
 <style>
   #controlPanel {
     display: flex;
-    flex-direction: inline;
   }
   #controlPanel > * {
+    display: flex;
     flex-grow: 1;
+    justify-content: center;
   }
 </style>

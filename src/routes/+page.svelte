@@ -2,6 +2,7 @@
   import Controls from '$lib/Controls.svelte';
 	import Animation from '$lib/Animation.svelte';
 	import Form from '$lib/Form.svelte';
+	// import Guesses from '$lib/Guesses.svelte';
 </script>
 
 <div class="container">
@@ -9,6 +10,7 @@
 </div>
 
 <Controls />
+
 <Animation />
 
 <Form />

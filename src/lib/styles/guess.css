@@ -1,3 +1,7 @@
+#form {
+  margin-top: 2rem;
+}
+
 #previouusGesses {
   display: flex;
   flex-direction: inline;
@@ -15,13 +19,34 @@
   border: 1px solid red;
 }
 
-td.success {
-  background-color: #2ecc71;
-}
-td.failure {
-  background-color: #e74c3c;
-}
-td.na {
-  background-color: #95a5a6;
+td {
+  /* border: 1px solid #ecf0f1; */
 }
 
+td.success {
+  background-color: #2ecc7133;
+  /* color: #ecf0f1; */
+  color: black;
+}
+td.failure {
+  background-color: #e74c3c33;
+  /* color: #ecf0f1; */
+  color: black;
+}
+td.na {
+  background-color: #95a5a633;
+  color: black;
+}
+
+
+.button-lg {
+  font-size: 2rem;
+  height: 5rem;
+  line-height: 5rem;
+}
+
+.container > .row {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2rem;
+}
