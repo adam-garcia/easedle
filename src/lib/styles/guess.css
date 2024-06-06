@@ -1,0 +1,27 @@
+#previouusGesses {
+  display: flex;
+  flex-direction: inline;
+}
+#previousGuesses > row {
+  border: 1px solid black;
+  flex-direction: inline;
+  display: flex;
+}
+
+#previousGuesses > row > div {
+  flex-grow: 1;
+  flex-basis: 0;
+  height: 2.4rem;
+  border: 1px solid red;
+}
+
+td.success {
+  background-color: #2ecc71;
+}
+td.failure {
+  background-color: #e74c3c;
+}
+td.na {
+  background-color: #95a5a6;
+}
+
