@@ -5,7 +5,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: 'main'
+    branches: 'troubleshoot-ci'
 
 jobs:
   build_site:
@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # this should match the `pages` option in your adapter-static options
-          path: 'easedle/'
+          path: 'build/easdle'
 
   deploy:
     needs: build_site
