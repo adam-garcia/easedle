@@ -9,6 +9,7 @@
   let cannotSubmit = true
   let showPenner = true;
   let previousGuesses = []
+  let newGame = false;
   function updateSubmissionAllowance() {
     cannotSubmit = !$guessedFamily
     showPenner = $guessedFamily == 'Penner'
@@ -17,7 +18,7 @@
     checkAnswers()
   }
   function handleSuccess() {
-    alert('You did it!')
+    newGame = true;
   }
   function handleFailure() {
   }
@@ -31,11 +32,11 @@
         params: {
           type: {
             correct: correctInOut,
-            value: $guessedPennerInOut
+            value: $guessedFamily == 'Linear' ? '-' : $guessedPennerInOut
           },
           func: {
             correct: correctFunc,
-            value: $guessedPennerFunc
+            value: $guessedFamily == 'Linear' ? '-' : $guessedPennerFunc
           }
         }
       }
@@ -65,14 +66,17 @@
       }
     }
   }
-  function composeClassForGuess(previousGuess, attr) {
+  function composeClassForGuess(previousGuess, attr, contentType) {
+    let status = undefined;
     if (attr == 'family') {
-      return previousGuess.family.correct ? 'success' : 'failure'
+      status = previousGuess.family.correct ? 'success' : 'failure'
     } else {
-      if (previousGuess.family.value == 'Linear') return 'na'
-      console.log(previousGuess.params[attr])
-      return previousGuess.params[attr].correct ? 'success' : 'failure'
+      if (previousGuess.family.value == 'Linear') {
+        status = 'na'
+      }
+      status = previousGuess.params[attr].correct ? 'success' : 'failure'
     }
+    return status
   }
   const families = Array.from(new Set([].concat(LINEAR, PENNER).map(f => f.family)))
   const pennerFuncs = Array.from(new Set(PENNER.map(d => d.props.func)))
@@ -83,7 +87,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="column">
+    <div class="column" id="form">
       <form on:submit|preventDefault={handleSubmit}>
         <label for="family">Family</label>
         <select id="family" bind:value={$guessedFamily} on:change={updateSubmissionAllowance}>
@@ -110,23 +114,42 @@
         </button>
       </form>
     </div>
+    <div class="column">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Family</th>
+            <th>In/Out</th>
+            <th>Function</th>
+          </tr>
+        </thead>
+        {#each previousGuesses as previousGuess, i}
+        <tr>
+          <td>{i + 1}</td>
+          <td class={composeClassForGuess(previousGuess, 'family')}>
+            {previousGuess.family.value}
+          </td>
+          <td class={composeClassForGuess(previousGuess, 'type')}>
+          {previousGuess.params.type.value}
+          </td>
+          <td class={composeClassForGuess(previousGuess, 'func')}>
+          {previousGuess.params.func.value}
+          </td>
+        </tr>
+        {/each}
+      </table>
+    </div>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th></th>
-        <th>Family</th>
-        <th>In/Out</th>
-        <th>Function</th>
-      </tr>
-    </thead>
-    {#each previousGuesses as previousGuess, i}
-    <tr>
-      <td>{i + 1}</td>
-      <td class={composeClassForGuess(previousGuess, 'family')}></td>
-      <td class={composeClassForGuess(previousGuess, 'type')}></td>
-      <td class={composeClassForGuess(previousGuess, 'func')}></td>
-    </tr>
-    {/each}
-  </table>
 </div>
+
+{#if newGame}
+  <div class="container">
+    <div class="row">
+      <h3>You did it!</h3>
+    </div>
+    <div class="row">
+      <button type="button" class="button button-lg" on:click={() => location.reload()}>New Game</button>
+    </div>
+  </div>
+{/if}

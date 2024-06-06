@@ -7,3 +7,4 @@ export let guessedFamily = writable(0);
 export let guessedPennerFunc = writable(0);
 export let guessedPennerInOut = writable(0);
 export let previousGuesses = writable([]);
+export let newGame = writable(false);
