@@ -3,26 +3,48 @@
 </style>
 
 <script>
-  import { guessedFamily, guessedPennerFunc, guessedPennerInOut, animationProps } from '$lib/store'
+  import { guessedFamily, guessedPennerFunc, guessedPennerInOut, animationProps, animation, selectedDate } from '$lib/store'
   import { LINEAR, PENNER } from '$lib/animation.js'
   let cannotSubmit = true
   let showPenner = true;
-  let previousGuesses = []
+  let previousGuesses = {}
+  previousGuesses[$selectedDate] = []
   let newGame = false;
+  selectedDate.subscribe(() => {
+    previousGuesses[$selectedDate] = previousGuesses[$selectedDate] || []
+    previousGuesses = previousGuesses
+  })
   function updateSubmissionAllowance() {
     cannotSubmit = !$guessedFamily
     showPenner = $guessedFamily == 'Penner'
   }
   function handleSubmit() {
-    checkAnswers()
+    let correctFamily = $guessedFamily == $animationProps.family
+    if ($guessedFamily != $animationProps.family) {
+      logAnswer(correctFamily, false, false)
+    }
+    else {
+      if ($animationProps.family == 'Linear') {
+        logAnswer(correctFamily, false, false)
+        handleSuccess()
+      } else if ($animationProps.family == 'Penner') {
+        let correctInOut = $guessedPennerInOut == $animationProps.props.type
+        let correctFunc = $guessedPennerFunc == $animationProps.props.func
+        if (correctFunc && correctInOut) {
+          logAnswer(correctFamily, correctInOut, correctFunc)
+          handleSuccess()
+        } else {
+          logAnswer(correctFamily, correctInOut, correctFunc)
+        }
+      }
+    }
   }
   function handleSuccess() {
     newGame = true;
-  }
-  function handleFailure() {
+    $animation.pause();
   }
   function logAnswer(correctFamily, correctInOut, correctFunc) {
-    previousGuesses.push(
+    previousGuesses[$selectedDate].push(
       {
         family: {
           correct: correctFamily,
@@ -42,29 +64,6 @@
     )
     previousGuesses = previousGuesses;
   }
-  function checkAnswers() {
-    let correctFamily = $guessedFamily == $animationProps.family
-    if ($guessedFamily != $animationProps.family) {
-      logAnswer(correctFamily, false, false)
-      handleFailure()
-    }
-    else {
-      if ($animationProps.family == 'Linear') {
-        logAnswer(correctFamily, false, false)
-        handleSuccess()
-      } else if ($animationProps.family == 'Penner') {
-        let correctInOut = $guessedPennerInOut == $animationProps.props.type
-        let correctFunc = $guessedPennerFunc == $animationProps.props.func
-        if (correctFunc && correctInOut) {
-          logAnswer(correctFamily, correctInOut, correctFunc)
-          handleSuccess()
-        } else {
-          logAnswer(correctFamily, correctInOut, correctFunc)
-          handleFailure()
-        }
-      }
-    }
-  }
   function composeClassForGuess(previousGuess, attr, contentType) {
     let status = undefined;
     if (attr == 'family') {
@@ -76,6 +75,17 @@
       status = previousGuess.params[attr].correct ? 'success' : 'failure'
     }
     return status
+  }
+  function goToNextDay() {
+    newGame = false;
+    $animation.pause()
+    guessedFamily.update(() => 0)
+    guessedPennerFunc.update(() => 0)
+    guessedPennerInOut.update(() => 0)
+    selectedDate.update((date) => {
+      return date.addDays(1)
+    })
+    $animation.play()
   }
   const families = Array.from(new Set([].concat(LINEAR, PENNER).map(f => f.family)))
   const pennerFuncs = Array.from(new Set(PENNER.map(d => d.props.func)))
@@ -123,7 +133,7 @@
             <th>Function</th>
           </tr>
         </thead>
-        {#each previousGuesses as previousGuess, i}
+        {#each previousGuesses[$selectedDate] as previousGuess, i}
         <tr>
           <td>{i + 1}</td>
           <td class={composeClassForGuess(previousGuess, 'family')}>
@@ -142,13 +152,15 @@
   </div>
 </div>
 
+<!-- newGame -->
 {#if newGame}
-  <div class="container">
-    <div class="row">
+  <div class="overlay">
+    <div class="overlay-content">
+      <h1>🎉</h1>
       <h3 class="w-100 centered">You did it!</h3>
-    </div>
-    <div class="row">
-      <button type="button" class="button button-lg" on:click={() => location.reload()}>New Game</button>
+      <div>
+        <button type="button" class="button button-lg" on:click={goToNextDay}>New Game</button>
+      </div>
     </div>
   </div>
 {/if}
