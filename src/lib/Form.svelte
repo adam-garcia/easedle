@@ -5,7 +5,6 @@
 <script>
   import { guessedFamily, guessedPennerFunc, guessedPennerInOut, animationProps } from '$lib/store'
   import { LINEAR, PENNER } from '$lib/animation.js'
-  import { invalidateAll } from '$app/navigation';
   let cannotSubmit = true
   let showPenner = true;
   let previousGuesses = []
@@ -146,7 +145,7 @@
 {#if newGame}
   <div class="container">
     <div class="row">
-      <h3>You did it!</h3>
+      <h3 class="w-100 centered">You did it!</h3>
     </div>
     <div class="row">
       <button type="button" class="button button-lg" on:click={() => location.reload()}>New Game</button>

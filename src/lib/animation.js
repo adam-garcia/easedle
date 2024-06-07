@@ -1,6 +1,7 @@
-import {animationProps} from '$lib/store.js';
+import {animationProps, selectedDate} from '$lib/store.js';
 import anime from "animejs";
 import { get } from 'svelte/store'
+import {randomLcg} from "d3-random";
 
 export const LINEAR = {
   family: 'Linear',
@@ -41,12 +42,11 @@ export const PENNER = cartesian(
 
 export const generateAnimationProps = function() {
   let easings = [].concat(LINEAR, PENNER)
-  return easings[Math.floor(Math.random() * (easings.length - 1))]
-
+  let today = get(selectedDate)
+  return easings[Math.floor(randomLcg(today)() * (easings.length - 1))]
 }
 
 export const newAnimation = function(playbackSpeed) {
-  let newAnimationProps = get(animationProps);
   return anime({
     targets: '#circle',
     translateX: 440 - 70,
