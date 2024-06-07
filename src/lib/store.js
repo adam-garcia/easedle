@@ -8,3 +8,4 @@ export let guessedPennerFunc = writable(0);
 export let guessedPennerInOut = writable(0);
 export let previousGuesses = writable([]);
 export let newGame = writable(false);
+export let selectedDate = writable(new Date());

@@ -20,6 +20,9 @@
 	"dependencies": {
 		"anime": "^0.1.2",
 		"animejs": "^3.2.2",
-		"milligram": "^1.4.1"
+		"d3-random": "^3.0.1",
+		"date-picker-svelte": "^2.13.0",
+		"milligram": "^1.4.1",
+		"svelte-easy-popover": "^1.0.0"
 	}
 }
