@@ -12,7 +12,6 @@
       $animation.pause();
       let anim = newAnimation($playbackSpeed);
       animation.update(() => anim);
-      console.log($animation)
       $animation.reset();
       $animation.play();
     })
